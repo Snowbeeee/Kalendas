@@ -1,0 +1,36 @@
+x-common-env: &common-env
+  - PYTHONUNBUFFERED=1
+  - MONGO_URI=mongodb://mongo:27017/
+  - CLASE1_URL=http://clase1:8001/Clase1
+  - CLASE2_URL=http://clase2:8002/Clase2
+
+services:
+    
+  mongo:    
+    image: mongo:7.0
+    container_name: mongo
+    ports:
+      - "27018:27017"
+    volumes:
+      - ./mongo_init:/docker-entrypoint-initdb.d # Inicializacion de la base de datos
+
+  clase1:
+    build: ./Clase1
+    ports:
+      - "8001:8001"  # host:container
+    environment: *common-env
+    depends_on:
+      - mongo
+
+
+  clase2:
+    build: ./Clase2
+    ports:
+      - "8002:8002"  # host:container
+    environment: *common-env
+    depends_on:
+      - mongo 
+
+
+
+
